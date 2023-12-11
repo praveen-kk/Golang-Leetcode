@@ -32,7 +32,7 @@ import "fmt"
 
 func main() {
 
-	nums := []int{2, 7, 11, 15}
+	nums := []int{2, 7, 11, 15, 3, 6}
 	target := 9
 
 	result := twoSum(nums, target)
@@ -40,19 +40,29 @@ func main() {
 }
 func twoSum(nums []int, target int) []int {
 
-	nums_map := make(map[int]int)
-	fmt.Println(nums_map)
+	numsMap := make(map[int]int)
+	fmt.Println(numsMap)
 
 	for i, num := range nums {
-		number_in_map := target - num
+		numberInMap := target - num
 
-		if index, found := nums_map[number_in_map]; found {
+		if index, found := numsMap[numberInMap]; found {
 			return []int{index, i}
 		}
 
-		nums_map[num] = i
+		numsMap[num] = i
 	}
-
 	return []int{}
 
 }
+
+//func twoSum1(nums []int, target int) []int {
+//	indexMap := make(map[int]int)
+//	for currIndex, currNum := range nums {
+//		if requiredIdx, isPresent := indexMap[target-currNum]; isPresent {
+//			return []int{requiredIdx, currIndex}
+//		}
+//		indexMap[currNum] = currIndex
+//	}
+//	return []int{}
+//}
