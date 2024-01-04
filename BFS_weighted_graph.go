@@ -34,22 +34,35 @@ func (g *Graph) AddEdge(src, dest, weight int) {
 func (g *Graph) ShortestPathFind(startVertex int) map[int]int {
 
 	distances := make(map[int]int)
+	fmt.Println("\nline 37  AdjacentList: ", g.AdjacentList)
 	for v := range g.AdjacentList {
 		distances[v] = -1
 	}
 	distances[startVertex] = 0
+	fmt.Println("line 42 distances : ", distances)
 	queue := []int{startVertex}
+	fmt.Println("line 43 queue: ", queue)
 
 	for len(queue) > 0 {
 		currentVertex := queue[0]
+		fmt.Println("line 46 currentVertex: ", currentVertex)
 		queue = queue[1:]
+		fmt.Println("line 49 queue: ", queue)
 
 		for _, edge := range g.AdjacentList[currentVertex] {
+			fmt.Println("line 51 g.AdjacentList[currentVertex]:  ", g.AdjacentList[currentVertex])
+			fmt.Printf("line 54 distances[currentVertex]: %d\n  edge.Weight : %d ", distances[currentVertex], edge.Weight)
 			newDistance := distances[currentVertex] + edge.Weight
+			fmt.Println("line 53 newDistance:  ", newDistance)
 
 			if distances[edge.To] == -1 || newDistance < distances[edge.To] {
 				distances[edge.To] = newDistance
+				fmt.Println("line 60 distances[edge.To]:  ", distances[edge.To])
+				fmt.Println("line 61 distances : ", distances)
 				queue = append(queue, edge.To)
+
+				fmt.Println("line 64 queue: ", queue)
+
 			}
 		}
 	}
@@ -71,7 +84,7 @@ func main() {
 	g.AddEdge(0, 9, 22)
 
 	fmt.Print(g)
-	startVertex := 4
+	startVertex := 0
 	g.ShortestPathFind(startVertex)
 
 	distances := g.ShortestPathFind(startVertex)
