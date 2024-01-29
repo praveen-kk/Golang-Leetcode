@@ -1,12 +1,14 @@
 /*
 Initial Thought :
+Loop though string search in each input line by slicing the line for the max length words of words in number to word map.
 
+Optimized Approach :
 create a Trie DS with the words to  1..9 map.
 
 insert the map and iterate through each line and search for the first and last digits.
 
-Time complexity: o(m * n^2)
-Space Complexity: o(m*n)
+Time complexity: o(M * N)  - M is the number of lines and N is the average length of each line
+Space Complexity: o(1)
 */
 package main
 
@@ -47,47 +49,12 @@ func (t *Trie) Insert(word string) {
 	node.isEnd = true
 
 }
-func (t *Trie) digit_calibration(inputLine string) (digit int) {
-	first := 0
-	last := 0
-	words := map[string]string{"1": "one", "2": "two", "3": "three", "4": "four", "5": "five", "6": "six", "7": "seven", "8": "eight", "9": "nine"}
+func (t *Trie) digit_calibration(inputLine string) (firstDigit, secondDigit string) {
 
-	// Insert words into the trie
-	for key, word := range words {
-		t.Insert(word)
-		t.Insert(key)
-	}
-	firstDigit := t.find_first_digit(inputLine)
-	if len(firstDigit) > 1 {
-		for k, v := range words {
-			if v == firstDigit {
-				first, _ = strconv.Atoi(k)
-				break
+	firstDigit = t.find_first_digit(inputLine)
+	secondDigit = t.findSecondDigit(inputLine)
 
-			}
-
-		}
-
-	} else {
-		first, _ = strconv.Atoi(firstDigit)
-	}
-	secondDigit := t.findSecondDigit(inputLine)
-	if len(secondDigit) > 1 {
-		for k, v := range words {
-			if v == secondDigit {
-				last, _ = strconv.Atoi(k)
-				break
-
-			}
-
-		}
-
-	} else {
-		last, _ = strconv.Atoi(secondDigit)
-	}
-
-	digit = first*10 + last
-	return digit
+	return firstDigit, secondDigit
 
 }
 
@@ -137,9 +104,15 @@ func (t *Trie) findSecondDigit(input string) string {
 
 func main() {
 	trie := NewTrie()
-	//line := "bgnnvfsnbpx29vsjrlmgmsqthreeqxvclkhlv"
-	//result := trie.digit_calibration(line)
-	//fmt.Printf("digit: %d", result)
+	first := 0
+	last := 0
+	words := map[string]string{"1": "one", "2": "two", "3": "three", "4": "four", "5": "five", "6": "six", "7": "seven", "8": "eight", "9": "nine"}
+
+	// Insert words into the trie, comment words if only integers is to be found
+	for key, word := range words {
+		trie.Insert(word)
+		trie.Insert(key)
+	}
 
 	file, err := os.Open("calibration.txt")
 	if err != nil {
@@ -152,14 +125,43 @@ func main() {
 	// read the file line by line
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
+		//var firstDigit, secondDigit string
 		line := scanner.Text()
 
 		// Calculate the calibration value for the current line
-		calibrationValue := trie.digit_calibration(line)
-		fmt.Printf("numbers %d\n", calibrationValue)
+		firstDigit, secondDigit := trie.digit_calibration(line)
+		if len(firstDigit) > 1 {
+			for k, v := range words {
+				if v == firstDigit {
+					first, _ = strconv.Atoi(k)
+					break
+
+				}
+
+			}
+
+		} else {
+			first, _ = strconv.Atoi(firstDigit)
+		}
+		if len(secondDigit) > 1 {
+			for k, v := range words {
+				if v == secondDigit {
+					last, _ = strconv.Atoi(k)
+					break
+
+				}
+
+			}
+
+		} else {
+			last, _ = strconv.Atoi(secondDigit)
+		}
+
+		digit := first*10 + last
+		fmt.Printf("numbers %d\n", digit)
 
 		// Add the calibration value to the sum
-		sum += calibrationValue
+		sum += digit
 	}
 	fmt.Printf("sum %d", sum)
 
